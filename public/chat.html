@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+    <title>Socket Chat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        form { position: fixed; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+    <div id="app">
+
+        <ul class="list-group" id="messages">
+            <li class="list-group-item" v-for="message in messages" >{{ message }}</li>
+        </ul>
+
+        <form @submit.prevent="sendMessage" class="d-flex bg-secondary">
+            <input v-model="messageInput" class="form-control m-2" autocomplete="off" />
+            <button class="btn btn-primary m-2">Send</button>
+        </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var socket = io();
+        var messages = [];
+        var app = new Vue({
+            el: '#app',
+
+            data: {
+                socket: socket,
+                messageInput: '',
+                messages: messages
+            },
+
+            methods: {
+                sendMessage: function() {
+                    this.socket.emit('chat message', this.messageInput);
+                    this.messageInput = '';
+                }
+            }
+        });
+
+        // When server emits a chat message
+        socket.on('chat message', function(msg){
+            messages.push(msg);
+        });
+    </script>
+</body>
+</html>
