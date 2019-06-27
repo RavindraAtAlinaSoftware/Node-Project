@@ -1,8 +1,10 @@
-const bcrypt = require('bcrypt');
-const express = require('express')
+const bcrypt = require('bcrypt')
 const bodyParser = require('body-parser')
-const passport = require('passport')
+const crypto = require('crypto')
+const express = require('express')
 const mysql = require('mysql2')
+const passport = require('passport')
+
 const app = express()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
@@ -95,12 +97,20 @@ app.post('/login', (req, res) => {
             // console.log(results[0].name)
             // console.log(results.length)
 
-            let user = results[0]
+            var user = results[0]
             console.log(user.password)
             bcrypt.compare(password, user.password, function(err, res) {
                 // res == true
                 console.log(res)
+                let token = crypto.randomBytes(32).toString('hex')
                 // If True then login this user
+                connection.execute(
+                    'INSERT INTO `users` (`remember_token`) VALUES()', [token], (err, result, fields) => {
+                        console.log('Token saved to database')
+                        console.log(result)
+                    });
+
+                // Insert token in the database
             });
         }
     );
