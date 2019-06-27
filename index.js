@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const express = require('express')
 const bodyParser = require('body-parser')
+const passport = require('passport')
 const mysql = require('mysql2')
 const app = express()
 const http = require('http').createServer(app)
