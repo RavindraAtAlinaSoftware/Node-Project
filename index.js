@@ -108,7 +108,6 @@ app.post('/login', (req, res) => {
 })
 
 app.post('/register', (req, res) => {
-    
 
 })
 
